@@ -56,8 +56,8 @@ export class GraphQLDirective {
   name: string;
   description: ?string;
   locations: Array<DirectiveLocationEnum>;
-  isRepeatable: boolean;
   args: Array<GraphQLArgument>;
+  isRepeatable: boolean;
   extensions: ?ReadOnlyObjMap<mixed>;
   astNode: ?DirectiveDefinitionNode;
 
@@ -81,25 +81,21 @@ export class GraphQLDirective {
       `@${config.name} args must be an object with argument names as keys.`,
     );
 
-    this.args = objectEntries(args).map(([argName, arg]) => ({
+    this.args = objectEntries(args).map(([argName, argConfig]) => ({
       name: argName,
-      description: arg.description === undefined ? null : arg.description,
-      type: arg.type,
-      defaultValue: arg.defaultValue,
-      extensions: arg.extensions && toObjMap(arg.extensions),
-      astNode: arg.astNode,
+      description: argConfig.description,
+      type: argConfig.type,
+      defaultValue: argConfig.defaultValue,
+      extensions: argConfig.extensions && toObjMap(argConfig.extensions),
+      astNode: argConfig.astNode,
     }));
-  }
-
-  toString(): string {
-    return '@' + this.name;
   }
 
   toConfig(): {|
     ...GraphQLDirectiveConfig,
     args: GraphQLFieldConfigArgumentMap,
-    extensions: ?ReadOnlyObjMap<mixed>,
     isRepeatable: boolean,
+    extensions: ?ReadOnlyObjMap<mixed>,
   |} {
     return {
       name: this.name,
@@ -110,6 +106,10 @@ export class GraphQLDirective {
       extensions: this.extensions,
       astNode: this.astNode,
     };
+  }
+
+  toString(): string {
+    return '@' + this.name;
   }
 }
 
@@ -198,9 +198,8 @@ export const specifiedDirectives = Object.freeze([
   GraphQLDeprecatedDirective,
 ]);
 
-export function isSpecifiedDirective(directive: mixed): boolean %checks {
-  return (
-    isDirective(directive) &&
-    specifiedDirectives.some(({ name }) => name === directive.name)
-  );
+export function isSpecifiedDirective(
+  directive: GraphQLDirective,
+): boolean %checks {
+  return specifiedDirectives.some(({ name }) => name === directive.name);
 }

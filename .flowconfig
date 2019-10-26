@@ -11,7 +11,7 @@
 
 [lints]
 sketchy-null-bool=off
-sketchy-null-string=off
+sketchy-null-string=error
 sketchy-null-number=error
 sketchy-null-mixed=error
 sketchy-number=error
@@ -38,4 +38,4 @@ suppress_comment=\\(.\\|\n\\)*\\$FlowFixMe\\($\\|[^(]\\|(\\(<VERSION>\\)?)\\)
 suppress_comment=\\(.\\|\n\\)*\\$DisableFlowOnNegativeTest
 
 [version]
-^0.106.0
+^0.110.0
